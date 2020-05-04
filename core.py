@@ -3,6 +3,10 @@ import numpy as np
 
 class Variable:
     def __init__(self, data) -> None:
+        if data is not None:
+            if not isinstance(data, np.ndarray):
+                raise TypeError('{} is not supported. Must be numpy.ndarray or None.'.format(type(data)))
+
         self.data = data
         self.grad = None
         self.creator = None
@@ -11,6 +15,9 @@ class Variable:
         self.creator = func
 
     def backward(self):
+        if self.grad is None:
+            self.grad = np.ones_like(self.data)
+
         funcs = [self.creator]
         while funcs:
             f = funcs.pop()
@@ -25,7 +32,7 @@ class Function:
     def __call__(self, input):
         x = input.data
         y = self.forward(x)
-        output = Variable(y)
+        output = Variable(as_array(y))
         output.set_creator(self)
         self.input = input
         self.output = output
@@ -57,3 +64,16 @@ class Exp(Function):
         gx = np.exp(x) * gy
         return gx
 
+
+def square(x):
+    return Square()(x)
+
+
+def exp(x):
+    return Exp()(x)
+
+
+def as_array(x):
+    if np.isscalar(x):
+        x = np.array(x)
+    return x
