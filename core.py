@@ -21,11 +21,16 @@ class Variable:
         funcs = [self.creator]
         while funcs:
             f = funcs.pop()
-            x, y = f.input, f.output
-            x.grad = f.backward(y.grad)
+            gys = [output.grad for output in f.outputs]
+            gxs = f.backward(*gys)
+            if not isinstance(gxs, tuple):
+                gxs = (gxs, )
 
-            if x.creator is not None:
-                funcs.append(x.creator)
+            for x, gx in zip(f.inputs, gxs):
+                x.grad = gx
+
+                if x.creator is not None:
+                    funcs.append(x.creator)
 
 
 class Function:
@@ -41,10 +46,10 @@ class Function:
         self.outputs = outputs
         return outputs if len(outputs) > 1 else outputs[0]
 
-    def forward(self, xs):
+    def forward(self, *xs):
         raise NotImplementedError()
 
-    def backward(self, gy):
+    def backward(self, *gy):
         raise NotImplementedError()
 
 
@@ -53,13 +58,16 @@ class Add(Function):
         y = x0 + x1
         return y
 
+    def backward(self, gy):
+        return gy,gy
+
 
 class Square(Function):
     def forward(self, x):
         return x ** 2
 
     def backward(self, gy):
-        x = self.input.data
+        x = self.inputs[0].data
         gx = 2 * x * gy
         return gx
 
@@ -69,7 +77,7 @@ class Exp(Function):
         return np.exp(x)
 
     def backward(self, gy):
-        x = self.input.data
+        x = self.inputs[0].data
         gx = np.exp(x) * gy
         return gx
 
