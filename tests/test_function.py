@@ -2,7 +2,8 @@ import unittest
 
 import numpy as np
 
-from dezero.core_simple import Variable, square, exp, add
+from dezero import Variable
+from dezero.functions import square, exp
 
 
 def numerical_diff(f, x, eps=1e-4):
@@ -29,7 +30,7 @@ class FuncTest(unittest.TestCase):
 
     def test_multi_node_gradient(self):
         def func(x):
-            return add(square(square(x)), square(square(x)))
+            return square(square(x)) + square(square(x))
         self.assertTrue(is_valid_gradient(func))
 
 

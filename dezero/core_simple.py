@@ -216,26 +216,6 @@ class Pow(Function):
         return gy * (c * x ** (c - 1))
 
 
-class Square(Function):
-    def forward(self, x):
-        return x ** 2
-
-    def backward(self, gy):
-        x = self.inputs[0].data
-        gx = 2 * x * gy
-        return gx
-
-
-class Exp(Function):
-    def forward(self, x):
-        return np.exp(x)
-
-    def backward(self, gy):
-        x = self.inputs[0].data
-        gx = np.exp(x) * gy
-        return gx
-
-
 def add(x0, x1):
     x1 = as_array(x1)
     return Add()(x0, x1)
@@ -272,14 +252,6 @@ def rdiv(x0, x1):
 
 def pow(x, c):
     return Pow(c)(x)
-
-
-def square(x):
-    return Square()(x)
-
-
-def exp(x):
-    return Exp()(x)
 
 
 def as_array(x):
