@@ -1,5 +1,5 @@
 import unittest
-from core import Variable, square, exp
+from core import Variable, square, exp, add
 import numpy as np
 
 
@@ -24,6 +24,11 @@ class FuncTest(unittest.TestCase):
 
     def test_exp_gradient(self):
         self.assertTrue(is_valid_gradient(exp))
+
+    def test_multi_node_gradient(self):
+        def func(x):
+            return add(square(square(x)), square(square(x)))
+        self.assertTrue(is_valid_gradient(func))
 
 
 if __name__ == '__main__':
