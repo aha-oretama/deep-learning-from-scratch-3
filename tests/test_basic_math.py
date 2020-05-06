@@ -1,6 +1,8 @@
 import unittest
-from core import Variable, add
+
 import numpy as np
+
+from dezero.core_simple import Variable, add
 
 
 class AddTest(unittest.TestCase):

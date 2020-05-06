@@ -1,5 +1,6 @@
 import numpy as np
-from core import Variable, Square, Exp
+
+from dezero.core_simple import Variable, Square, Exp
 
 A = Square()
 B = Exp()

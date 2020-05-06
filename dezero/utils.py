@@ -1,5 +1,7 @@
-from core import Variable
 import numpy as np
+
+from dezero import Variable
+
 
 def array_equal(a, b):
     """True if two arrays have the same shape and elements, False otherwise.

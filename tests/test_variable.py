@@ -1,7 +1,9 @@
 import unittest
-from core import Variable
-from utils import array_equal
+
 import numpy as np
+
+from dezero import Variable
+from dezero.utils import array_equal
 
 
 class VariableTest(unittest.TestCase):
