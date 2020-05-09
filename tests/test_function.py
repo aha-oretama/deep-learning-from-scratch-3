@@ -17,7 +17,7 @@ def is_valid_gradient(func):
     y = func(x)
     y.backward()
     num_grad = numerical_diff(func, x)
-    return np.allclose(x.grad, num_grad)
+    return np.allclose(x.grad.data, num_grad)
 
 
 class FuncTest(unittest.TestCase):
