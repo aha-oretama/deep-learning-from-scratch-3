@@ -8,7 +8,7 @@ class Square(Function):
         return x ** 2
 
     def backward(self, gy):
-        x = self.inputs[0].data
+        x, = self.inputs
         gx = 2 * x * gy
         return gx
 
@@ -18,8 +18,8 @@ class Exp(Function):
         return np.exp(x)
 
     def backward(self, gy):
-        x = self.inputs[0].data
-        gx = np.exp(x) * gy
+        x, = self.inputs
+        gx = exp(x) * gy
         return gx
 
 
@@ -28,8 +28,8 @@ class Sin(Function):
         return np.sin(x)
 
     def backward(self, gy):
-        x = self.inputs[0].data
-        return gy * np.cos(x)
+        x, = self.inputs
+        return gy * cos(x)
 
 
 class Cos(Function):
@@ -37,8 +37,18 @@ class Cos(Function):
         return np.cos(x)
 
     def backward(self, gy):
-        x = self.inputs[0].data
-        return gy * (-np.sin(x))
+        x, = self.inputs
+        return gy * -sin(x)
+
+
+class Tanh(Function):
+    def forward(self, x):
+        y = np.tanh(x)
+        return y
+
+    def backward(self, gy):
+        y = self.outputs[0]()
+        return gy * (1 - y * y)
 
 
 def square(x):
@@ -55,3 +65,7 @@ def sin(x):
 
 def cos(x):
     return Cos()(x)
+
+
+def tanh(x):
+    return Tanh()(x)

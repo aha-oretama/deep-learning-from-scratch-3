@@ -3,7 +3,7 @@ import unittest
 import numpy as np
 
 from dezero import Variable
-from dezero.functions import square, exp
+from dezero.functions import square, exp, sin, cos, tanh
 
 
 def numerical_diff(f, x, eps=1e-4):
@@ -28,9 +28,19 @@ class FuncTest(unittest.TestCase):
     def test_exp_gradient(self):
         self.assertTrue(is_valid_gradient(exp))
 
+    def test_sin_gradient(self):
+        self.assertTrue(is_valid_gradient(sin))
+
+    def test_cos_gradient(self):
+        self.assertTrue(is_valid_gradient(cos))
+
+    def test_tanh_gradient(self):
+        self.assertTrue(is_valid_gradient(tanh))
+
     def test_multi_node_gradient(self):
         def func(x):
             return square(square(x)) + square(square(x))
+
         self.assertTrue(is_valid_gradient(func))
 
 
