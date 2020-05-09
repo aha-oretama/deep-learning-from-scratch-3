@@ -23,9 +23,35 @@ class Exp(Function):
         return gx
 
 
+class Sin(Function):
+    def forward(self, x):
+        return np.sin(x)
+
+    def backward(self, gy):
+        x = self.inputs[0].data
+        return gy * np.cos(x)
+
+
+class Cos(Function):
+    def forward(self, x):
+        return np.cos(x)
+
+    def backward(self, gy):
+        x = self.inputs[0].data
+        return gy * (-np.sin(x))
+
+
 def square(x):
     return Square()(x)
 
 
 def exp(x):
     return Exp()(x)
+
+
+def sin(x):
+    return Sin()(x)
+
+
+def cos(x):
+    return Cos()(x)
