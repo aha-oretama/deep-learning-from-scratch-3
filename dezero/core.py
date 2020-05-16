@@ -3,7 +3,7 @@ import weakref
 
 import numpy as np
 
-import dezero.functions
+import dezero
 
 
 class Config:
@@ -250,7 +250,7 @@ class Pow(Function):
         return x ** self.c
 
     def backward(self, gy):
-        x = self.inputs
+        x, = self.inputs
         c = self.c
         return gy * (c * x ** (c - 1))
 

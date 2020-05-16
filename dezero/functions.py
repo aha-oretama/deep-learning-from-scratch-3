@@ -1,7 +1,7 @@
 import numpy as np
 
-import dezero.utils
-from dezero import Function, as_variable
+from dezero import utils
+from dezero.core import Function, as_variable
 
 
 class Square(Function):
@@ -92,8 +92,8 @@ class Sum(Function):
         y = x.sum(axis=self.axis, keepdims=self.keepdims)
         return y
 
-    def backward(self, *gy):
-        gy = dezero.utils.reshape_sum_backward(gy, self.x_shape, self.axis, self.keepdims)
+    def backward(self, gy):
+        gy = utils.reshape_sum_backward(gy, self.x_shape, self.axis, self.keepdims)
         gx = broadcast_to(gy, self.x_shape)
         return gx
 
@@ -118,7 +118,7 @@ class SumTo(Function):
 
     def forward(self, x):
         self.x_shape = x.shape
-        y = dezero.utils.sum_to(x, self.shape)
+        y = utils.sum_to(x, self.shape)
         return y
 
     def backward(self, gy):
@@ -137,6 +137,21 @@ class MatMul(Function):
         gx = matmul(gy, W.T)
         gW = matmul(x.T, gy)
         return gx, gW
+
+
+class MeanSquaredError(Function):
+    def forward(self, x0, x1):
+        diff = x0 - x1
+        y = (diff ** 2).sum() / len(diff)
+        return y
+
+    def backward(self, gy):
+        x0, x1 = self.inputs
+        diff = x0 - x1
+        gy = broadcast_to(gy, diff.shape)
+        gx0 = gy * diff * (2. / len(diff))
+        gx1 = -gx0
+        return gx0, gx1
 
 
 def square(x):
@@ -187,3 +202,7 @@ def sum_to(x, shape):
 
 def matmul(x, W):
     return MatMul()(x, W)
+
+
+def mean_squared_error(x0, x1):
+    return MeanSquaredError()(x0, x1)
