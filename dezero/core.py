@@ -157,6 +157,10 @@ class Variable:
         self.grad = None
 
 
+class Parameter(Variable):
+    pass
+
+
 class Function:
     def __call__(self, *inputs):
         inputs = [as_variable(input) for input in inputs]
