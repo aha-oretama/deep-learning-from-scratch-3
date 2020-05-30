@@ -110,6 +110,9 @@ class Variable:
     def __pow__(self, power, modulo=None):
         return pow(self, power)
 
+    def __getitem__(self, item):
+        return dezero.functions.get_item(item)
+
     def set_creator(self, func):
         self.creator = func
         self.generation = func.generation + 1
@@ -259,6 +262,40 @@ class Pow(Function):
         return gy * (c * x ** (c - 1))
 
 
+class Softmax(Function):
+    def __init__(self, axis=1):
+        self.axis = axis
+
+    def forward(self, x):
+        y = x - x.max(axis=self.axis, keepdims=True)
+        y = np.exp(y)
+        y /= y.sum(axis=self.axis, keepdims=True)
+        return y
+
+    def backward(self, gy):
+        y = self.outputs[0]()
+        gx = y * gy
+        sumdx = gx.sum(axis=self.axis, keepdims=True)
+        gx -= y * sumdx
+        return gx
+
+
+class Clip(Function):
+    def __init__(self, x_min, x_max):
+        self.x_min = x_min
+        self.x_max = x_max
+
+    def forward(self, x):
+        y = np.clip(x, self.x_min, self.x_max)
+        return y
+
+    def backward(self, gy):
+        x, = self.inputs
+        mask = (x.data >= self.x_min) * (x.data <= self.x_max)
+        gx = gy * mask
+        return gx
+
+
 def add(x0, x1):
     x1 = as_array(x1)
     return Add()(x0, x1)
@@ -295,6 +332,14 @@ def rdiv(x0, x1):
 
 def pow(x, c):
     return Pow(c)(x)
+
+
+def softmax(x, axis=1):
+    return Softmax(axis)(x)
+
+
+def clip(x, x_min, x_max):
+    return Clip(x_min, x_max)(x)
 
 
 def as_array(x):
