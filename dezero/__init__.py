@@ -18,5 +18,7 @@ else:
     from dezero.core import as_array
     from dezero.core import as_variable
     from dezero.datasets import Dataset
+    from dezero.dataloaders import DataLoader
 
     import dezero.datasets
+    import dezero.dataloaders
