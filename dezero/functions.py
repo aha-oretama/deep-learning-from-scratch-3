@@ -262,6 +262,16 @@ class Clip(Function):
         gx = gy * mask
         return gx
 
+class ReLU(Function):
+    def forward(self, x):
+        y = np.maximum(x, 0.0)
+        return y
+
+    def backward(self, gy):
+        x, = self.inputs
+        mask = x.data > 0
+        gx = gy * mask
+        return gx
 
 def square(x):
     return Square()(x)
@@ -349,3 +359,7 @@ def accuracy(y, t):
     result = (pred == t.data)
     acc = np.mean(result)
     return Variable(as_array(acc))
+
+
+def relu(x):
+    return ReLU()(x)
