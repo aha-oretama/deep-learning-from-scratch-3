@@ -1,8 +1,7 @@
 import numpy as np
 
 from dezero import utils
-from dezero.core import Config
-from dezero.core import Function, as_variable, as_array, Variable
+from dezero.core import Function, as_variable, as_array, Variable, Config
 
 
 class Square(Function):
