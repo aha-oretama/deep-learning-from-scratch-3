@@ -1,8 +1,8 @@
 import numpy as np
 
 from dezero.core import Function
-from dezero.functions import broadcast_to
 from dezero.utils import pair, get_conv_outsize, get_deconv_outsize
+from dezero.functions import broadcast_to
 
 
 # =============================================================================
@@ -21,7 +21,7 @@ class Conv2d(Function):
         y = np.tensordot(col, W, ((1, 2, 3), (1, 2, 3)))
         if b is not None:
             y += b
-        y = np.rollaxis(y, 3, 1)  # y = np.transpose(y, (0, 3, 1, 2))
+        y = np.rollaxis(y, 3, 1) # y = np.transpose(y, (0, 3, 1, 2))
         return y
 
     def backward(self, gy):
@@ -217,8 +217,8 @@ class AveragePooling(Function):
         # TODO(Koki): This is simple implementation
         N, C, OH, OW = gy.shape
         KW, KH = pair(self.kernel_size)
-        gy /= (KW * KH)
-        gcol = broadcast_to(gy.reshape(-1), (KH, KW, N * C * OH * OW))
+        gy /= (KW*KH)
+        gcol = broadcast_to(gy.reshape(-1), (KH, KW, N*C*OH*OW))
         gcol = gcol.reshape(KH, KW, N, C, OH, OW).transpose(2, 3, 0, 1, 4, 5)
         gx = col2im(gcol, self.input_shape, self.kernel_size, self.stride,
                     self.pad, to_matrix=False)
@@ -227,7 +227,6 @@ class AveragePooling(Function):
 
 def average_pooling(x, kernel_size, stride=1, pad=0):
     return AveragePooling(kernel_size, stride, pad)(x)
-
 
 # =============================================================================
 #  im2col / col2im
@@ -308,6 +307,7 @@ def col2im(x, input_shape, kernel_size, stride=1, pad=0, to_matrix=True):
 #  numpy im2col
 # =============================================================================
 def im2col_array(img, kernel_size, stride, pad, to_matrix=True):
+
     N, C, H, W = img.shape
     KH, KW = pair(kernel_size)
     SH, SW = pair(stride)

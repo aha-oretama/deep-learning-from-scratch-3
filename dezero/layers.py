@@ -103,15 +103,14 @@ class Linear(Layer):
 
 
 class Conv2d(Layer):
-    def __init__(self, out_channels, kernel_size, stride=1, pad=0, nobias=False, dtype=np.float32,
-                 in_channels=None) -> None:
+    def __init__(self, out_channels, kernel_size, stride=1, pad=0, nobias=False, dtype=np.float32, in_channels=None) -> None:
         super().__init__()
         self.in_channels = in_channels
         self.out_channels = out_channels
         self.kernel_size = kernel_size
         self.stride = stride
         self.pad = pad
-        self.dtype = dtype
+        self.dtype= dtype
 
         self.W = Parameter(None, name='W')
         if in_channels is not None:
@@ -136,3 +135,5 @@ class Conv2d(Layer):
 
         y = F.conv2d(x, self.W, self.b, self.stride, self.pad)
         return y
+
+
