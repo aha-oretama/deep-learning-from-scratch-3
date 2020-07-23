@@ -5,6 +5,7 @@ import numpy as np
 
 import dezero.functions as F
 from dezero import Parameter
+from dezero.functions import Linear
 from dezero.utils import pair
 
 
@@ -137,3 +138,20 @@ class Conv2d(Layer):
         return y
 
 
+class RNN(Layer):
+    def __init__(self, hidden_size, in_size=None):
+        super().__init__()
+        self.x2h = Linear(hidden_size, in_size=in_size)
+        self.h2h = Linear(hidden_size, in_size=in_size, nobias=True)
+        self.h = None
+
+    def reset_state(self):
+        self.h = None
+
+    def forward(self, x):
+        if self.h is None:
+            h_new = F.tanh(self.x2h(x))
+        else:
+            h_new = F.tanh(self.x2h(x) + self.h2h(self.h))
+        self.h = h_new
+        return h_new
